@@ -1,57 +1,14 @@
 from tupy import *
 
-Max_esquerda = 90
-Max_direita = 530
-mario_em_pe_na_plataforma = 21  # para estar em pé em uma plataforma, mario deve estar 21 acima nessas dimensões.
-# LARGURA DA PLATAFORMA: 32
-# ALTURA DA PLATAFORMA: -16
-# DESVIO DE ALTURA DAS PLATAFORMAS PRA FICAR IGUAL O DO DK: -3
-# ALTURA E LARGURA DA ESCADA: 18
-# PARA COLOCAR A ESCADA NO CANTO DA PLATAFORMA: MUDAR 7. NO TOPO, MUDAR 16
+
+from game_Base.fundo import Fundo
+from game_Base.estruturas.escadas import Escadas
+from game_Base.estruturas.plataforma import Plataforma
+from game_Base.globais import Max_direita,Max_esquerda
 
 
-class fundo(BaseImage):
-    def __init__(self, x=0, y=0):
-        super().__init__("fundo.png", x, y)
+Fundo()
 
-
-fundo()
-
-
-class estruturas(BaseImage):
-    def __init__(self, imagem: str, x: int, y: int):
-        super().__init__(imagem, x, y)
-        self._imagem = imagem
-        self._x = x
-        self._y = y
-
-    def __str__(self):
-        # return f"Imagem: {self._imagem}, x: {self._x}, y: {self._y}"
-        return f"{self._x}, {self._y}"
-
-    def __repr__(self):
-        # return f"Imagem: {self._imagem}, x: {self._x}, y: {self._y}"
-        return f"{self._x}, {self._y}"
-
-
-class Plataforma(estruturas):
-    _num_plataformas = 0
-
-    def __init__(self, x: float, y: float, transparência: bool = False):
-        super().__init__("Platform.png", x, y)
-        Plataforma._num_plataformas += 1
-        self._posterior = (
-            y - mario_em_pe_na_plataforma
-        )  # Região em que o Mario fica em pé na plataforma
-        self._transparente = transparência
-
-
-class Escadas(estruturas):
-    _num_escadas = 0
-
-    def __init__(self, x: float, y: float):
-        super().__init__("Ladder.png", x, y)
-        Escadas._num_escadas += 1
 
 
 escadas = [
@@ -320,6 +277,7 @@ class Mario(Entidades):
         print(
             f"Preguiçoso... toma seu {int} de volta. Nada de teletransportes por aqui"
         )
+
 
 
 mario = Mario(
