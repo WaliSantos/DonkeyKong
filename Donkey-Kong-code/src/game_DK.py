@@ -2,13 +2,15 @@ from tupy import *
 
 
 from game_Base.fundo import Fundo
+from game_Base.timer import Timer
 from game_Base.estruturas.escadas import Escadas
 from game_Base.estruturas.plataforma import Plataforma
+from game_Base.estruturas.stackBarril import StackBarril
+
 from game_Base.globais import Max_direita,Max_esquerda
 
 
 Fundo()
-
 
 
 escadas = [
@@ -47,7 +49,12 @@ escadas = [
     Escadas(464, 159),
     Escadas(464, 141),
     Escadas(464, 123),
+    Escadas(380, 105),
+    Escadas(380, 95),
+    Escadas(380, 85)
 ]
+
+
 # 10
 platforms = [
     Plataforma(100, 480),
@@ -129,8 +136,15 @@ platforms = [
     Plataforma(169, 120),
     Plataforma(137, 120),
     Plataforma(105, 120),
+    Plataforma(380, 80),
+    Plataforma(350, 80),
+    Plataforma(320, 80),
+
 ]
 
+StackBarril(110,70)
+
+############################## Entidades
 
 class Entidades(BaseImage):
     def __init__(self, imagem, x: float, y: float, nome: str = "entidade"):
@@ -194,6 +208,7 @@ class Entidades(BaseImage):
             if self._collides_with(escadas[i]):
                 return True
         return False
+
 
 
 class Mario(Entidades):
@@ -278,6 +293,112 @@ class Mario(Entidades):
             f"Preguiçoso... toma seu {int} de volta. Nada de teletransportes por aqui"
         )
 
+
+class DonkeyKong(Entidades):
+    def __init__(
+        self,
+        animacoes_esquerda_direita_list: list[str],
+        animacoes_subindo_list: list[str], intervalo: int
+    ):
+        super().__init__("dkForward.png", 190, 65, "DonkeyKong")
+        self.animacoes_esquerda_direita_list = animacoes_esquerda_direita_list
+        self.animacoes_subindo_list = animacoes_subindo_list
+        self.timer = Timer(intervalo)
+        
+        self.penult_tick= False
+        self.count= -1
+        
+        # self.list_countAux_barril = [
+        #                 "dkForward.png",    
+        #                 "dkLeft.png",
+        #                 "dkForward.png",
+        #                 "dkRight.png"
+        #                 ]
+        # self.countAux_barril = ""
+       
+    def update(self):
+        self.timer.update()
+        self._file = self.animacoes_esquerda_direita_list[self.timer.ticks % len(self.animacoes_esquerda_direita_list)]
+
+        if self.timer.ticked:
+            self.count+= 1
+            # if self.count == len(self.animacoes_esquerda_direita_list)+1:
+            #     self.count = 0
+            # print(self.count)
+            # self.countAux_barril = self.list_countAux_barril[self.count]
+
+        if self.count == len(self.animacoes_esquerda_direita_list) :
+            self.penult_tick = True
+            if self.penult_tick : 
+                barril = Barril(["barrel1.png",
+                                "barrel2.png",
+                                "barrel3.png",
+                                "barrel4.png"])
+                self.penult_tick = False
+            
+            self.count= 0
+################################ objetos dinamicos:
+
+class ObjDinamico(BaseImage):
+    def __init__(self, imagem, x: float, y: float, nome: str = "ObjetoDinamico"):
+        super().__init__(imagem, x, y)
+        # self._nome = nome
+        # self._count = 0
+        self._countX = 0
+        self._countY = 0
+        # self._countJump = 0
+        # self._pulando = False
+
+    def __str__(self):
+        return f'O objeto é "{self._nome}" e está em x: {self._x} e y: {self._y}'
+
+    def __repr__(self):
+        return f'O objeto é "{self._nome}" e está em x: {self._x} e y: {self._y}'
+
+    def movimentoX(self, animacaolist: list[str], velocidade: int = 3):
+        self._file = animacaolist[self._countX]
+        self._x += velocidade
+        if not ((self._countX + 1) % len(animacaolist)):
+            self._countX = 0
+            return
+        self._countX += 1
+
+    def movimentoY(self, animacaolist: list[str], velocidade: int = 2):
+        self._file = animacaolist[self._countY]
+        self._y -= velocidade
+        if not ((self._countY + 1) % len(animacaolist)):
+            self._countY = 0
+            return
+        self._countY += 1
+
+class Barril(ObjDinamico):
+    def __init__(self, animacoes_run: list[str]):
+        super().__init__("barrel1.png",  250,100 , "Barril")
+        self.caindo = False
+        self.verificar_escada = False
+        self.animacoes_run = animacoes_run
+
+    def update(self):
+        if self._x <700:
+            self.movimentoX(self.animacoes_run, 3)
+
+        
+
+
+        
+
+donkeyKong = DonkeyKong(
+    [
+        "dkForward.png",    
+        "dkLeft.png",
+        "dkForward.png",
+        "dkRight.png"
+        ],
+    [
+        "dkClimbEmpty1.png",
+        "dkClimbEmpty2.png"],
+     25
+)    
 
 
 mario = Mario(
