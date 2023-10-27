@@ -224,6 +224,9 @@ class Mario(Entidades):
         super().__init__("Mario_Run1.png", 100, 458, "Mario")
         self._direita = True
         self._atacando = False
+        self._vivo = True
+        self._vida = 300
+        self._win = False
 
     def colisao_com_plataformas(self) -> bool:
         for i in range(Plataforma._num_plataformas):
@@ -250,13 +253,16 @@ class Mario(Entidades):
                     barrel.destroy()
                     return True
             elif barrel._collides_with(self):
-                #diminuir vida de mario
                 return True
     
+    def win(self):
+        if self._collides_with(pauline):
+            self._win = True
 
     def update(self):
         self.colisao_com_barril()
         self.colisao_com_plataformas()
+        self.win()
         if keyboard.is_key_just_down("space") and self.colisao_com_plataformas():
             self._pulando = True
         if self._pulando:
@@ -309,15 +315,19 @@ class Mario(Entidades):
         if self._atacando:
             if self.colisao_com_barril():      
                 Barril._num_barril += -1
-        
-        
+
+        #acrescentar a remoção do coração, a medida que o mário perde 100 de vida
+        if self._vivo:
+            if self.colisao_com_barril():
+                self._vida += -100
+                if self._vida == 0:
+                    self._file = "dead.png"
+                    self._vivo = False
+
+        if self._win:
+            Label("You Win", 500, 200, 'Arial 80', anchor = 'center', color = "Green")
+
             
-        
-
-
-    
-
-
 
     @property
     def x(self):
@@ -370,8 +380,20 @@ class DonkeyKong(Entidades):
         else:
             self.wait += -1
 
+class Pauline(Entidades):
+    animacoes_pauline = [
+        "pauline-still.png",
+        "pauline-help.png"
 
-
+    ]
+    def __init__(self):
+        super().__init__("pauline-still.png", 350, 45, "Pauline")
+        self.timer = Timer(10)
+        self.files = Pauline.animacoes_pauline
+    def update(self):
+        self.timer.update()
+        self._file = self.files[self.timer.ticks % len(self.files)]
+            
 
 class Barril(Entidades):
     animacoes_run = ["barrel1.png", "barrel2.png", "barrel3.png", "barrel4.png"]
@@ -427,6 +449,25 @@ class Barril(Entidades):
         self._count += 1
 
 
+class Sistema_Pontuacao(BaseGroup):
+    def __init__(self) -> None:
+        super().__init__(0, 0)
+        self._vida = '♥️'
+        self._rectangle = Rectangle(600, 100, 110, 50, fill = 'black', outline = 'red')
+        self._label_vida1 = Label(self._vida, 660, 125, 'Arial 40', anchor = 'center', color = "red")
+        self._label_vida2 = Label(self._vida, 690, 125, 'Arial 40', anchor = 'center', color = "red")
+        self._label_vida3 = Label(self._vida, 720, 125, 'Arial 40', anchor = 'center', color = "red")
+        self._add(self._rectangle)
+        self._add(self._label_vida1)
+        self._add(self._label_vida2)
+        self._add(self._label_vida3)
+    
+
+
+
+
+sistema = Sistema_Pontuacao()
+pauline = Pauline()
 barril = []
 donkeyKong = DonkeyKong(25)
 mario = Mario()
