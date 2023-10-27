@@ -5,7 +5,6 @@ class Timer:
 
    def update(self):
       self.counter += 1
-
    @property
    def ticked(self):
       return self.counter % self.interval == 0

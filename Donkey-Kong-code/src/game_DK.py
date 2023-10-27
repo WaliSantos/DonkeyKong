@@ -6,9 +6,9 @@ from game_Base.timer import Timer
 from game_Base.estruturas.escadas import Escadas
 from game_Base.estruturas.plataforma import Plataforma
 from game_Base.estruturas.stackBarril import StackBarril
-
-from game_Base.globais import Max_direita,Max_esquerda
-
+from random import randint
+from random import choice
+from game_Base.globais import Max_direita, Max_esquerda
 
 Fundo()
 
@@ -16,6 +16,7 @@ Fundo()
 escadas = [
     Escadas(254, 464),
     Escadas(254, 390),
+    Escadas(254, 399),
     Escadas(457, 449),
     Escadas(457, 431),
     Escadas(457, 413),
@@ -51,7 +52,7 @@ escadas = [
     Escadas(464, 123),
     Escadas(380, 105),
     Escadas(380, 95),
-    Escadas(380, 85)
+    Escadas(380, 85),
 ]
 
 
@@ -71,25 +72,25 @@ platforms = [
     Plataforma(452, 465),
     Plataforma(484, 462),
     Plataforma(516, 459),
-    Plataforma(489, 416, True),
-    Plataforma(457, 413, True),
-    Plataforma(425, 410, True),
+    Plataforma(489, 416, True, True),
+    Plataforma(457, 413, True, True),
+    Plataforma(425, 410, True, True),
     Plataforma(393, 407),
     Plataforma(361, 404),
     Plataforma(329, 401),
     Plataforma(297, 398),
-    Plataforma(265, 395),
-    Plataforma(233, 392),
+    Plataforma(265, 395, False, True),
+    Plataforma(233, 392, False, True),
     Plataforma(201, 389),
     Plataforma(169, 386),
     Plataforma(137, 383),
     Plataforma(105, 380),
-    Plataforma(137, 335, True),
-    Plataforma(169, 332, True),
+    Plataforma(137, 335, True, True),
+    Plataforma(169, 332, True, True),
     Plataforma(201, 329),
     Plataforma(233, 326),
-    Plataforma(265, 323, True),
-    Plataforma(297, 320, True),
+    Plataforma(265, 323, True, True),
+    Plataforma(297, 320, True, True),
     Plataforma(329, 317),
     Plataforma(361, 314),
     Plataforma(393, 311),
@@ -97,34 +98,34 @@ platforms = [
     Plataforma(457, 305),
     Plataforma(489, 302),
     Plataforma(521, 299),
-    Plataforma(489, 257, True),
-    Plataforma(457, 256, True),
+    Plataforma(489, 257, True, True),
+    Plataforma(457, 256, True, True),
     Plataforma(425, 254),
     Plataforma(393, 252),
-    Plataforma(361, 250, True),
-    Plataforma(329, 248, True),
+    Plataforma(361, 250, True, True),
+    Plataforma(329, 248, True, True),
     Plataforma(297, 246, True),
     Plataforma(265, 244),
-    Plataforma(233, 242),
-    Plataforma(201, 240),
+    Plataforma(233, 242, False, True),
+    Plataforma(201, 240, False, True),
     Plataforma(169, 238),
     Plataforma(137, 236),
     Plataforma(105, 234),
-    Plataforma(137, 187, True),
-    Plataforma(169, 186, True),
+    Plataforma(137, 187, True, True),
+    Plataforma(169, 186, True, True),
     Plataforma(201, 185, True),
-    Plataforma(233, 184, True),
-    Plataforma(265, 183, True),
+    Plataforma(233, 184, True, True),
+    Plataforma(265, 183, True, True),
     Plataforma(297, 182),
     Plataforma(329, 181),
     Plataforma(361, 180),
-    Plataforma(393, 179),
-    Plataforma(425, 178),
+    Plataforma(393, 179, False, True),
+    Plataforma(425, 178, False, True),
     Plataforma(457, 177),
     Plataforma(489, 176),
     Plataforma(521, 175),
-    Plataforma(489, 124, True),
-    Plataforma(457, 123, True),
+    Plataforma(489, 124, True, True),
+    Plataforma(457, 123, True, True),
     Plataforma(425, 122, True),
     Plataforma(393, 121),
     Plataforma(361, 120),
@@ -139,12 +140,12 @@ platforms = [
     Plataforma(380, 80),
     Plataforma(350, 80),
     Plataforma(320, 80),
-
 ]
 
-StackBarril(110,70)
+StackBarril(110, 70)
 
 ############################## Entidades
+
 
 class Entidades(BaseImage):
     def __init__(self, imagem, x: float, y: float, nome: str = "entidade"):
@@ -186,12 +187,50 @@ class Entidades(BaseImage):
             return
         self._countJump += 1
 
+    def colisao_com_escadas(self):
+        for i in range(Escadas._num_escadas):
+            if self._collides_with(escadas[i]):
+                return True
+        return False
+
+
+class Mario(Entidades):
+    animacoes_direita_list = [
+        "Mario_Run2.png",
+        "Mario_Run2.png",
+        "Mario_Run3.png",
+        "Mario_Run3.png",
+        "Mario_Run1.png",
+        "Mario_Run1.png",
+    ]
+    animacoes_esquerda_list = [
+        "Mario_Run2esq.png",
+        "Mario_Run2esq.png",
+        "Mario_Run3esq.png",
+        "Mario_Run3esq.png",
+        "Mario_Run1esq.png",
+        "Mario_Run1esq.png",
+    ]
+    animacoes_subindo_list = [
+        "Mario_Climb.png",
+        "Mario_Climb.png",
+        "Mario_Climb2.png",
+        "Mario_Climb2.png",
+    ]
+    animacoes_pulo_list = ["Mario_Jump.png"]
+    animacoes_puloesq_list = ["Mario_Jumpesq.png"]
+
+    def __init__(self):
+        super().__init__("Mario_Run1.png", 100, 458, "Mario")
+        self._direita = True
+        self._atacando = False
+
     def colisao_com_plataformas(self) -> bool:
         for i in range(Plataforma._num_plataformas):
             if self._collides_with(platforms[i]):
                 if (
                     self._file == "Mario_Climb.png" or self._file == "Mario_Climb2.png"
-                ) and platforms[i]._transparente:
+                ) and platforms[i]._transparente_mario:
                     return False
                 if self._y + 14 < platforms[i]._y:
                     self._y = platforms[i]._posterior
@@ -202,63 +241,51 @@ class Entidades(BaseImage):
             return False
         self._y += 4
         return False
-
-    def colisao_com_escadas(self):
-        for i in range(Escadas._num_escadas):
-            if self._collides_with(escadas[i]):
+    def colisao_com_barril(self) ->bool:
+       for barrel in barril:
+            if barrel._collides_with(self) and (
+                self._file == "Mario_destroy.png" or
+                self._file == "Mario_destroy_left.png"):
+                    barril.remove(barrel)
+                    barrel.destroy()
+                    return True
+            elif barrel._collides_with(self):
+                #diminuir vida de mario
                 return True
-        return False
-
-
-
-class Mario(Entidades):
-    def __init__(
-        self,
-        animacoes_direita_list: list[str],
-        animacoes_esquerda_list: list[str],
-        animacoes_subindo_list: list[str],
-        animacoes_pulo_list: list[str],
-        animacoes_puloesq_list: list[str],
-    ):
-        super().__init__("Mario_Run1.png", 100, 458, "Mario")
-        self.animacoes_direita_list = animacoes_direita_list
-        self.animacoes_esquerda_list = animacoes_esquerda_list
-        self.animacoes_subindo_list = animacoes_subindo_list
-        self.animacoes_pulo_list = animacoes_pulo_list
-        self.animacoes_puloesq_list = animacoes_puloesq_list
-        self._direita = True
+    
 
     def update(self):
+        self.colisao_com_barril()
         self.colisao_com_plataformas()
         if keyboard.is_key_just_down("space") and self.colisao_com_plataformas():
             self._pulando = True
         if self._pulando:
             if self._direita:
-                self.pulo(self.animacoes_pulo_list, 8)
+                self.pulo(Mario.animacoes_pulo_list, 8)
             else:
-                self.pulo(self.animacoes_puloesq_list, 8)
+                self.pulo(Mario.animacoes_puloesq_list, 8)
             self._count += 1
             if self._count == 6:
                 self._pulando = False
                 self._count = 0
         if keyboard.is_key_down("Left"):
             if self._x <= Max_esquerda:
-                self.movimentoX(self.animacoes_esquerda_list, 0)
+                self.movimentoX(Mario.animacoes_esquerda_list, 0)
             else:
-                self.movimentoX(self.animacoes_esquerda_list, -3)
+                self.movimentoX(Mario.animacoes_esquerda_list, -3)
             self._direita = False
         if keyboard.is_key_down("Right"):
             if self._x >= Max_direita:
-                self.movimentoX(self.animacoes_direita_list, 0)
+                self.movimentoX(Mario.animacoes_direita_list, 0)
             else:
-                self.movimentoX(self.animacoes_direita_list)
+                self.movimentoX(Mario.animacoes_direita_list)
             self._direita = True
         if keyboard.is_key_down("Up"):
             if self.colisao_com_escadas():
-                self.movimentoY_escada(self.animacoes_subindo_list)
+                self.movimentoY_escada(Mario.animacoes_subindo_list)
         if keyboard.is_key_down("Down"):
             if self.colisao_com_escadas():
-                self.movimentoY_escada(self.animacoes_subindo_list, -2)
+                self.movimentoY_escada(Mario.animacoes_subindo_list, -2)
         if (
             keyboard.is_key_up("Up")
             and keyboard.is_key_up("Down")
@@ -272,6 +299,25 @@ class Mario(Entidades):
                 self._file = "Mario_Run1.png"
             else:
                 self._file = "Mario_Run1esq.png"
+        
+        if keyboard.is_key_just_down("j") and self.colisao_com_plataformas():
+            if self._direita:
+                self._file = "Mario_destroy.png"
+            else:
+                self._file = "Mario_destroy_left.png"
+            self._atacando = True
+        if self._atacando:
+            if self.colisao_com_barril():      
+                Barril._num_barril += -1
+        
+        
+            
+        
+
+
+    
+
+
 
     @property
     def x(self):
@@ -295,137 +341,99 @@ class Mario(Entidades):
 
 
 class DonkeyKong(Entidades):
-    def __init__(
-        self,
-        animacoes_esquerda_direita_list: list[str],
-        animacoes_subindo_list: list[str], intervalo: int
-    ):
-        super().__init__("dkForward.png", 190, 65, "DonkeyKong")
-        self.animacoes_esquerda_direita_list = animacoes_esquerda_direita_list
-        self.animacoes_subindo_list = animacoes_subindo_list
-        self.timer = Timer(intervalo)
-        
-        self.penult_tick= False
-        self.count= -1
-        
-        # self.list_countAux_barril = [
-        #                 "dkForward.png",    
-        #                 "dkLeft.png",
-        #                 "dkForward.png",
-        #                 "dkRight.png"
-        #                 ]
-        # self.countAux_barril = ""
-       
-    def update(self):
-        self.timer.update()
-        self._file = self.animacoes_esquerda_direita_list[self.timer.ticks % len(self.animacoes_esquerda_direita_list)]
-
-        if self.timer.ticked:
-            self.count+= 1
-            # if self.count == len(self.animacoes_esquerda_direita_list)+1:
-            #     self.count = 0
-            # print(self.count)
-            # self.countAux_barril = self.list_countAux_barril[self.count]
-
-        if self.count == len(self.animacoes_esquerda_direita_list) :
-            self.penult_tick = True
-            if self.penult_tick : 
-                barril = Barril(["barrel1.png",
-                                "barrel2.png",
-                                "barrel3.png",
-                                "barrel4.png"])
-                self.penult_tick = False
-            
-            self.count= 0
-################################ objetos dinamicos:
-
-class ObjDinamico(BaseImage):
-    def __init__(self, imagem, x: float, y: float, nome: str = "ObjetoDinamico"):
-        super().__init__(imagem, x, y)
-        # self._nome = nome
-        # self._count = 0
-        self._countX = 0
-        self._countY = 0
-        # self._countJump = 0
-        # self._pulando = False
-
-    def __str__(self):
-        return f'O objeto é "{self._nome}" e está em x: {self._x} e y: {self._y}'
-
-    def __repr__(self):
-        return f'O objeto é "{self._nome}" e está em x: {self._x} e y: {self._y}'
-
-    def movimentoX(self, animacaolist: list[str], velocidade: int = 3):
-        self._file = animacaolist[self._countX]
-        self._x += velocidade
-        if not ((self._countX + 1) % len(animacaolist)):
-            self._countX = 0
-            return
-        self._countX += 1
-
-    def movimentoY(self, animacaolist: list[str], velocidade: int = 2):
-        self._file = animacaolist[self._countY]
-        self._y -= velocidade
-        if not ((self._countY + 1) % len(animacaolist)):
-            self._countY = 0
-            return
-        self._countY += 1
-
-class Barril(ObjDinamico):
-    def __init__(self, animacoes_run: list[str]):
-        super().__init__("barrel1.png",  250,100 , "Barril")
-        self.caindo = False
-        self.verificar_escada = False
-        self.animacoes_run = animacoes_run
-
-    def update(self):
-        if self._x <700:
-            self.movimentoX(self.animacoes_run, 3)
-
-        
-
-
-        
-
-donkeyKong = DonkeyKong(
-    [
-        "dkForward.png",    
+    animacoes_esquerda_direita_list = [
+        "dkForward.png",
         "dkLeft.png",
         "dkForward.png",
-        "dkRight.png"
-        ],
-    [
-        "dkClimbEmpty1.png",
-        "dkClimbEmpty2.png"],
-     25
-)    
+        "dkRight.png",
+    ]
+    animacoes_subindo_list = (["dkClimbEmpty1.png", "dkClimbEmpty2.png"],)
+    animacao_length = len(animacoes_esquerda_direita_list)
+
+    def __init__(
+        self,
+        intervalo: int,
+    ):
+        super().__init__("dkForward.png", 190, 65, "DonkeyKong")
+        self.wait = 0
+        self.count = 0
+
+    def update(self):
+        self._file = "dkForward.png"
+        if not self.wait:
+            self._file = DonkeyKong.animacoes_esquerda_direita_list[(self.count // 7)]
+            self.count += 1
+            if self.count // DonkeyKong.animacao_length == 7:
+                barril.append(Barril())
+                self.count = 0
+                self.wait = random.randint(50, 100)
+        else:
+            self.wait += -1
 
 
-mario = Mario(
-    [
-        "Mario_Run2.png",
-        "Mario_Run2.png",
-        "Mario_Run3.png",
-        "Mario_Run3.png",
-        "Mario_Run1.png",
-        "Mario_Run1.png",
-    ],
-    [
-        "Mario_Run2esq.png",
-        "Mario_Run2esq.png",
-        "Mario_Run3esq.png",
-        "Mario_Run3esq.png",
-        "Mario_Run1esq.png",
-        "Mario_Run1esq.png",
-    ],
-    ["Mario_Climb.png", "Mario_Climb.png", "Mario_Climb2.png", "Mario_Climb2.png"],
-    ["Mario_Jump.png"],
-    ["Mario_Jumpesq.png"],
-)
+
+
+class Barril(Entidades):
+    animacoes_run = ["barrel1.png", "barrel2.png", "barrel3.png", "barrel4.png"]
+    _num_barril = 0
+
+    def __init__(self):
+        super().__init__("barrel1.png", 250, 102, "Barril")
+        self._movimenta_para = 3
+        self._x_da_escada = 999
+        self._count = 0
+        self._decisao_de_descida = random.randint(0, 1)
+        Barril._num_barril += 1
+
+    def colisao_com_escadas(self):
+        for i in range(Escadas._num_escadas):
+            if self._collides_with(escadas[i]):
+                self._x_da_escada = escadas[i]._x
+                return True
+        self._x_da_escada = 999
+        return False
+
+    def colisao_com_plataformas(self) -> bool:
+        for i in range(Plataforma._num_plataformas):
+            if self._collides_with(platforms[i]):
+                if (self._y + 11 < platforms[i]._y) and not platforms[
+                    i
+                ]._transparente_barril:
+                    self._y = platforms[i]._posterior + 3
+                    return True
+        if self.colisao_com_escadas():
+            if (
+                self._x > self._x_da_escada - 2 and self._x < self._x_da_escada + 2
+            ) and self._decisao_de_descida:
+                self._movimenta_para = random.choice([-3, 3])
+                self._y += 4
+                return False
+            return True
+        for i in range(Plataforma._num_plataformas):
+            if self._collides_with(platforms[i]) and platforms[i]._transparente_barril:
+                return True
+        self._y += 4
+        return False
+
+    def update(self):
+        if not (self._count % 50):
+            self._decisao_de_descida = random.randint(0, 1)
+        if self._x >= 530:
+            self._movimenta_para = -3
+        if self._x <= 90:
+            self._movimenta_para = 3
+        if self._x <= 532 and self._x >= 88 and self.colisao_com_plataformas():
+            self.movimentoX(Barril.animacoes_run, self._movimenta_para)
+        self._count += 1
+
+
+barril = []
+donkeyKong = DonkeyKong(25)
+mario = Mario()
 ponto = Entidades(
     "ponto.png", 100, platforms[0]._y - 1, "a"
 )  # PARTE DE CIMA DA PLATAFORMA
-ponto = Entidades("ponto2.png", 100, mario._y + 14, "a")  # PÉ DO MARIO
+ponto = Entidades("ponto2.png", mario._x, mario._y, "a")  # PÉ DO MARIO
 print(f"pé do mário: {mario._y + 14}")
 print(f"plataforma: {platforms[0]._y - 1}")
 run(globals())
