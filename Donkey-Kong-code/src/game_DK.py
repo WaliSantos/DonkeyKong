@@ -227,6 +227,7 @@ class Mario(Entidades):
         self._vivo = True
         self._vida = 300
         self._win = False
+        self._suspiro = 0
 
     def colisao_com_plataformas(self) -> bool:
         for i in range(Plataforma._num_plataformas):
@@ -316,13 +317,20 @@ class Mario(Entidades):
             if self.colisao_com_barril():      
                 Barril._num_barril += -1
 
-        #acrescentar a remoção do coração, a medida que o mário perde 100 de vida
-        if self._vivo:
+
+        self._suspiro +=1
+        if self._vivo and self._suspiro == 12:
             if self.colisao_com_barril():
                 self._vida += -100
+                if self._vida >= 0:
+                    sistema.perde_vida()
                 if self._vida == 0:
                     self._file = "dead.png"
                     self._vivo = False
+                    Label("You Loser", 500, 200, 'Arial 80', anchor = 'center', color = "Green")
+            self._suspiro =0
+        elif self._vivo== False:
+            self._file = "dead.png"
 
         if self._win:
             Label("You Win", 500, 200, 'Arial 80', anchor = 'center', color = "Green")
@@ -397,6 +405,7 @@ class Pauline(Entidades):
 
 class Barril(Entidades):
     animacoes_run = ["barrel1.png", "barrel2.png", "barrel3.png", "barrel4.png"]
+    animacoes_escada = ["barrel-down.png"]
     _num_barril = 0
 
     def __init__(self):
@@ -411,6 +420,7 @@ class Barril(Entidades):
         for i in range(Escadas._num_escadas):
             if self._collides_with(escadas[i]):
                 self._x_da_escada = escadas[i]._x
+                self.movimentoY_escada(Barril.animacoes_escada, 0)
                 return True
         self._x_da_escada = 999
         return False
@@ -447,26 +457,32 @@ class Barril(Entidades):
         if self._x <= 532 and self._x >= 88 and self.colisao_com_plataformas():
             self.movimentoX(Barril.animacoes_run, self._movimenta_para)
         self._count += 1
+        for barrel in barril:
+            if barrel._x >= 110 and barrel._y >= 463:
+                    barril.remove(barrel)
+                    barrel.destroy()
+                    Barril._num_barril -= 1
 
 
-class Sistema_Pontuacao(BaseGroup):
+class SistemaVida(BaseGroup):
     def __init__(self) -> None:
         super().__init__(0, 0)
-        self._vida = '♥️'
-        self._rectangle = Rectangle(600, 100, 110, 50, fill = 'black', outline = 'red')
-        self._label_vida1 = Label(self._vida, 660, 125, 'Arial 40', anchor = 'center', color = "red")
-        self._label_vida2 = Label(self._vida, 690, 125, 'Arial 40', anchor = 'center', color = "red")
-        self._label_vida3 = Label(self._vida, 720, 125, 'Arial 40', anchor = 'center', color = "red")
-        self._add(self._rectangle)
-        self._add(self._label_vida1)
-        self._add(self._label_vida2)
-        self._add(self._label_vida3)
+        _rectangle = Rectangle(600, 100, 140, 50, fill = 'black', outline = 'pink')
+        _label_vida1 = Image('full-heart.png', 630, 125) 
+        _label_vida2 = Image('full-heart.png', 670, 125) 
+        _label_vida3 = Image('full-heart.png',710, 125) 
+        self._add(_rectangle)
+        self._add(_label_vida1)
+        self._add(_label_vida2)
+        self._add(_label_vida3)
+    
+    def perde_vida(self):
+        coracao = self._objects[-1]
+        self._remove(coracao)
+        coracao.destroy()
     
 
-
-
-
-sistema = Sistema_Pontuacao()
+sistema = SistemaVida()
 pauline = Pauline()
 barril = []
 donkeyKong = DonkeyKong(25)
