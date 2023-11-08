@@ -6,6 +6,7 @@ from game_Base.timer import Timer
 from game_Base.estruturas.escadas import Escadas
 from game_Base.estruturas.plataforma import Plataforma
 from game_Base.estruturas.stackBarril import StackBarril
+import time
 from random import randint
 from random import choice
 from game_Base.globais import Max_direita, Max_esquerda
@@ -190,7 +191,8 @@ class Entidades(BaseImage):
     def colisao_com_escadas(self):
         for i in range(Escadas._num_escadas):
             if self._collides_with(escadas[i]):
-                return True
+                if self._x + 5 >= escadas[i]._x and self._x - 5 <= escadas[i]._x:
+                    return True
         return False
 
 
@@ -228,6 +230,7 @@ class Mario(Entidades):
         self._vida = 300
         self._win = False
         self._suspiro = 0
+        
 
     def colisao_com_plataformas(self) -> bool:
         for i in range(Plataforma._num_plataformas):
@@ -264,78 +267,92 @@ class Mario(Entidades):
         self.colisao_com_barril()
         self.colisao_com_plataformas()
         self.win()
-        if keyboard.is_key_just_down("space") and self.colisao_com_plataformas():
-            self._pulando = True
-        if self._pulando:
-            if self._direita:
-                self.pulo(Mario.animacoes_pulo_list, 8)
-            else:
-                self.pulo(Mario.animacoes_puloesq_list, 8)
-            self._count += 1
-            if self._count == 6:
-                self._pulando = False
-                self._count = 0
-        if keyboard.is_key_down("Left"):
-            if self._x <= Max_esquerda:
-                self.movimentoX(Mario.animacoes_esquerda_list, 0)
-            else:
-                self.movimentoX(Mario.animacoes_esquerda_list, -3)
-            self._direita = False
-        if keyboard.is_key_down("Right"):
-            if self._x >= Max_direita:
-                self.movimentoX(Mario.animacoes_direita_list, 0)
-            else:
-                self.movimentoX(Mario.animacoes_direita_list)
-            self._direita = True
-        if keyboard.is_key_down("Up"):
-            if self.colisao_com_escadas():
-                self.movimentoY_escada(Mario.animacoes_subindo_list)
-        if keyboard.is_key_down("Down"):
-            if self.colisao_com_escadas():
-                self.movimentoY_escada(Mario.animacoes_subindo_list, -2)
-        if (
-            keyboard.is_key_up("Up")
-            and keyboard.is_key_up("Down")
-            and keyboard.is_key_up("Right")
-            and keyboard.is_key_up("Left")
-            and not self._pulando
-        ):
-            if self._file == "Mario_Climb.png" or self._file == "Mario_Climb2.png":
-                self._file = "Mario_Climb.png"
-            elif self._direita:
-                self._file = "Mario_Run1.png"
-            else:
-                self._file = "Mario_Run1esq.png"
-        
-        if keyboard.is_key_just_down("j") and self.colisao_com_plataformas():
-            if self._direita:
-                self._file = "Mario_destroy.png"
-            else:
-                self._file = "Mario_destroy_left.png"
-            self._atacando = True
-        if self._atacando:
-            if self.colisao_com_barril():      
-                Barril._num_barril += -1
 
+        if self._vivo:
+            if keyboard.is_key_just_down("space") and self.colisao_com_plataformas():
+                self._pulando = True
+            if self._pulando:
+                if self._direita:
+                    self.pulo(Mario.animacoes_pulo_list, 9)
+                else:
+                    self.pulo(Mario.animacoes_puloesq_list, 9)
+                self._count += 1
+                if self._count == 6:
+                    self._pulando = False
+                    self._count = 0
 
-        self._suspiro +=1
-        if self._vivo and self._suspiro == 12:
-            if self.colisao_com_barril():
-                self._vida += -100
-                if self._vida >= 0:
-                    sistema.perde_vida()
-                if self._vida == 0:
+            if keyboard.is_key_down("Left") and self._vivo:
+                if self._x <= Max_esquerda:
+                    self.movimentoX(Mario.animacoes_esquerda_list, 0)
+                else:
+                    self.movimentoX(Mario.animacoes_esquerda_list, -3)
+                self._direita = False
+            if keyboard.is_key_down("Right") and self._vivo:
+                if self._x >= Max_direita:
+                    self.movimentoX(Mario.animacoes_direita_list, 0)
+                else:
+                    self.movimentoX(Mario.animacoes_direita_list)
+                self._direita = True
+            if keyboard.is_key_down("Up") and not self._pulando:
+                if self.colisao_com_escadas() and self._vivo:
+                    self.movimentoY_escada(Mario.animacoes_subindo_list)
+            if keyboard.is_key_down("Down") and not self._pulando:
+                if self.colisao_com_escadas() and self._vivo:
+                    self.movimentoY_escada(Mario.animacoes_subindo_list, -2)
+            if (
+                keyboard.is_key_up("Up")
+                and keyboard.is_key_up("Down")
+                and keyboard.is_key_up("Right")
+                and keyboard.is_key_up("Left")
+                and not self._pulando
+            ):
+                if self._file == "Mario_Climb.png" or self._file == "Mario_Climb2.png":
+                    self._file = "Mario_Climb.png"
+                elif self._direita:
+                    self._file = "Mario_Run1.png"
+                else:
+                    self._file = "Mario_Run1esq.png"
+            
+            if keyboard.is_key_just_down("j") and self.colisao_com_plataformas():
+                if self._direita:
+                    self._file = "Mario_destroy.png"
+                else:
+                    self._file = "Mario_destroy_left.png"
+                self._atacando = True
+            if self._atacando:
+                if self.colisao_com_barril():      
+                    Barril._num_barril += -1
+
+            self._suspiro +=1
+            if self._vivo and self._suspiro == 12:
+                if self.colisao_com_barril():
+                    self._vida += -100
+                    
+                    time.sleep(1)
+
+                    for i in barril:
+                        i.destroy()
+                    barril.clear()
+                    Barril._num_barril = 0
+                    
                     self._file = "dead.png"
-                    self._vivo = False
-                    Label("You Loser", 500, 200, 'Arial 80', anchor = 'center', color = "Green")
-            self._suspiro =0
-        elif self._vivo== False:
-            self._file = "dead.png"
+
+                    time.sleep(1)
+
+                    self._x, self._y, self._direita = 100, 458, True
+
+                    if self._vida >= 0:
+                        sistema.perde_vida()
+                    if self._vida == 0:
+                        self._file = "dead.png"
+                        self._vivo = False
+                        Label("You Loser", 500, 200, 'Arial 80', anchor = 'center', color = "Green")
+                self._suspiro = 0
+            elif self._vivo == False:
+                self._file = "dead.png"
 
         if self._win:
             Label("You Win", 500, 200, 'Arial 80', anchor = 'center', color = "Green")
-
-            
 
     @property
     def x(self):
@@ -369,9 +386,8 @@ class DonkeyKong(Entidades):
     animacao_length = len(animacoes_esquerda_direita_list)
 
     def __init__(
-        self,
-        intervalo: int,
-    ):
+        self,intervalo: int,
+        ):
         super().__init__("dkForward.png", 190, 65, "DonkeyKong")
         self.wait = 0
         self.count = 0
@@ -379,14 +395,14 @@ class DonkeyKong(Entidades):
     def update(self):
         self._file = "dkForward.png"
         if not self.wait:
-            self._file = DonkeyKong.animacoes_esquerda_direita_list[(self.count // 7)]
-            self.count += 1
-            if self.count // DonkeyKong.animacao_length == 7:
-                barril.append(Barril())
-                self.count = 0
-                self.wait = random.randint(50, 100)
+                self._file = DonkeyKong.animacoes_esquerda_direita_list[(self.count // 7)]
+                self.count += 1
+                if self.count // DonkeyKong.animacao_length == 7:
+                    barril.append(Barril())
+                    self.count = 0
+                    self.wait = random.randint(50, 100)
         else:
-            self.wait += -1
+                self.wait += -1
 
 class Pauline(Entidades):
     animacoes_pauline = [
@@ -410,7 +426,7 @@ class Barril(Entidades):
 
     def __init__(self):
         super().__init__("barrel1.png", 250, 102, "Barril")
-        self._movimenta_para = 3
+        self._movimenta_para = 5
         self._x_da_escada = 999
         self._count = 0
         self._decisao_de_descida = random.randint(0, 1)
@@ -431,32 +447,33 @@ class Barril(Entidades):
                 if (self._y + 11 < platforms[i]._y) and not platforms[
                     i
                 ]._transparente_barril:
-                    self._y = platforms[i]._posterior + 3
+                    self._y = platforms[i]._posterior + 5
                     return True
         if self.colisao_com_escadas():
             if (
                 self._x > self._x_da_escada - 2 and self._x < self._x_da_escada + 2
             ) and self._decisao_de_descida:
-                self._movimenta_para = random.choice([-3, 3])
-                self._y += 4
+                self._movimenta_para = random.choice([-5, 5])
+                self._y += 6
                 return False
             return True
         for i in range(Plataforma._num_plataformas):
             if self._collides_with(platforms[i]) and platforms[i]._transparente_barril:
                 return True
-        self._y += 4
+        self._y += 6
         return False
 
     def update(self):
         if not (self._count % 50):
             self._decisao_de_descida = random.randint(0, 1)
         if self._x >= 530:
-            self._movimenta_para = -3
+            self._movimenta_para = -5
         if self._x <= 90:
-            self._movimenta_para = 3
+            self._movimenta_para = 5
         if self._x <= 532 and self._x >= 88 and self.colisao_com_plataformas():
             self.movimentoX(Barril.animacoes_run, self._movimenta_para)
         self._count += 1
+        
         for barrel in barril:
             if barrel._x >= 110 and barrel._y >= 463:
                     barril.remove(barrel)
