@@ -1,15 +1,6 @@
 Max_esquerda = 90
 Max_direita = 530
 
-# ## fase 1:  variavel de testes ainda
-# Max_diretira_plataforma6 = 361
-# Max_esquerda_plataforma5 = 361
-# Max_diretira_plataforma4 = 361
-# Max_esquerda_plataforma3 = 361
-# Max_diretira_plataforma2 = 361
-# Max_esquerda_plataforma1 = 361
-
-
 mario_em_pe_na_plataforma = 21  # para estar em pé em uma plataforma, mario deve estar 21 acima nessas dimensões.
 # LARGURA DA PLATAFORMA: 32
 # ALTURA DA PLATAFORMA: -16

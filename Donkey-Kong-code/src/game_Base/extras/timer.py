@@ -1,5 +1,11 @@
 class Timer:
-   def __init__(self, interval):
+   '''
+      Classe Timer para controlar o tempo 
+   '''
+   def __init__(self, interval)->None:
+      '''
+         Inicializa a instância da classe Timer
+      '''
       self.interval = interval
       self.counter = 0
 

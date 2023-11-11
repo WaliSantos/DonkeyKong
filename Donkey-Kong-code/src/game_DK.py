@@ -1,62 +1,61 @@
 from tupy import *
 
+from game_Base.fundo.fundo import Fundo
 
-from game_Base.fundo import Fundo
-from game_Base.timer import Timer
-from game_Base.estruturas.escadas import Escadas
+from game_Base.estruturas.escadas import Escada
 from game_Base.estruturas.plataforma import Plataforma
 from game_Base.estruturas.stackBarril import StackBarril
+from game_Base.sistemas.sistemaVida import SistemaVida
+
+from game_Base.variaveis.globais import Max_direita, Max_esquerda
+
+from game_Base.extras.timer import Timer
+
 import time
 import random
-from random import randint
-from random import choice
-from game_Base.globais import Max_direita, Max_esquerda
 
 Fundo()
 
-
 escadas = [
-    Escadas(254, 464),
-    Escadas(254, 390),
-    Escadas(254, 399),
-    Escadas(457, 449),
-    Escadas(457, 431),
-    Escadas(457, 413),
-    Escadas(162, 368),
-    Escadas(162, 350),
-    Escadas(162, 332),
-    Escadas(290, 380),
-    Escadas(290, 362),
-    Escadas(290, 344),
-    Escadas(290, 326),
-    Escadas(290, 318),
-    Escadas(226, 310),
-    Escadas(226, 241),
-    Escadas(226, 248),
-    Escadas(336, 301),
-    Escadas(336, 283),
-    Escadas(336, 265),
-    Escadas(336, 246),
-    Escadas(464, 289),
-    Escadas(464, 271),
-    Escadas(464, 253),
-    Escadas(162, 222),
-    Escadas(162, 204),
-    Escadas(162, 186),
-    Escadas(240, 226),
-    Escadas(240, 208),
-    Escadas(240, 190),
-    Escadas(240, 181),
-    Escadas(418, 236),
-    Escadas(418, 178),
-    Escadas(464, 159),
-    Escadas(464, 141),
-    Escadas(464, 123),
-    Escadas(380, 105),
-    Escadas(380, 95),
-    Escadas(380, 85),
+    Escada(254, 464),
+    Escada(254, 390),
+    Escada(254, 399),
+    Escada(457, 449),
+    Escada(457, 431),
+    Escada(457, 413),
+    Escada(162, 368),
+    Escada(162, 350),
+    Escada(162, 332),
+    Escada(290, 380),
+    Escada(290, 362),
+    Escada(290, 344),
+    Escada(290, 326),
+    Escada(290, 318),
+    Escada(226, 310),
+    Escada(226, 248),
+    Escada(336, 301),
+    Escada(336, 283),
+    Escada(336, 265),
+    Escada(336, 246),
+    Escada(464, 289),
+    Escada(464, 271),
+    Escada(464, 253),
+    Escada(162, 222),
+    Escada(162, 204),
+    Escada(162, 186),
+    Escada(240, 226),
+    Escada(240, 208),
+    Escada(240, 190),
+    Escada(240, 181),
+    Escada(418, 236),
+    Escada(418, 178),
+    Escada(464, 159),
+    Escada(464, 141),
+    Escada(464, 123),
+    Escada(380, 105),
+    Escada(380, 95),
+    Escada(380, 85),
 ]
-
 
 # 10
 platforms = [
@@ -146,11 +145,17 @@ platforms = [
 
 StackBarril(110, 70)
 
-############################## Entidades
+############################## Entidades 
 
-
-class Entidades(BaseImage):
+class Entidade(BaseImage):
+    '''
+        Classe base para entidades do jogo.
+        Esta classe representa entidades genéricas que podem existir nojogo.
+    '''
     def __init__(self, imagem, x: float, y: float, nome: str = "entidade"):
+        '''
+        Inicializa a instância da classe Entidade
+        '''
         super().__init__(imagem, x, y)
         self._nome = nome
         self._count = 0
@@ -160,12 +165,21 @@ class Entidades(BaseImage):
         self._pulando = False
 
     def __str__(self):
+        '''
+            Permite uma representação de string legível de uma instância da classe Entidade
+        '''
         return f'A entidade é "{self._nome}" e está em x: {self._x} e y: {self._y}'
 
     def __repr__(self):
+        '''
+            Permite uma representação oficial de uma instância da classe Entidade
+        '''
         return f'A entidade é "{self._nome}" e está em x: {self._x} e y: {self._y}'
 
     def movimentoX(self, animacaolist: list[str], velocidade: int = 3):
+        '''
+            Esse método cuida da movimentação no eixo x
+        '''
         self._file = animacaolist[self._countX]
         self._x += velocidade
         if not ((self._countX + 1) % len(animacaolist)):
@@ -174,6 +188,9 @@ class Entidades(BaseImage):
         self._countX += 1
 
     def movimentoY_escada(self, animacaolist: list[str], velocidade: int = 2):
+        '''
+            Esse método cuida da movimentação no eixo y
+        '''
         self._file = animacaolist[self._countY]
         self._y -= velocidade
         if not ((self._countY + 1) % len(animacaolist)):
@@ -182,6 +199,9 @@ class Entidades(BaseImage):
         self._countY += 1
 
     def pulo(self, animacaolist: list[str], velocidade: int = 2):
+        '''
+            Esse método permite a entidade pular
+        '''
         self._file = animacaolist[self._countJump]
         self._y -= velocidade
         if not ((self._countJump + 1) % len(animacaolist)):
@@ -190,14 +210,19 @@ class Entidades(BaseImage):
         self._countJump += 1
 
     def colisao_com_escadas(self):
-        for i in range(Escadas._num_escadas):
+        '''
+            Esse método avalia se a entidade colidiu com uma escada 
+        '''
+        for i in range(Escada._num_escadas):
             if self._collides_with(escadas[i]):
                 if self._x + 5 >= escadas[i]._x and self._x - 5 <= escadas[i]._x:
                     return True
         return False
 
-
-class Mario(Entidades):
+class Mario(Entidade):
+    '''
+        Classe da entidade mário
+    '''
     animacoes_direita_list = [
         "Mario_Run2.png",
         "Mario_Run2.png",
@@ -228,6 +253,9 @@ class Mario(Entidades):
     animacoes_hammer_dir_list = ["Mario_destroy.png","Mario_Run2.png"]
 
     def __init__(self) -> None:
+        '''
+            incializa a instância da classe Mário
+        '''
         super().__init__("Mario_Run1.png", 100, 458, "Mario")
         self._direita = True
         self._atacando = False
@@ -243,6 +271,9 @@ class Mario(Entidades):
 
 
     def colisao_com_plataformas(self) -> bool:
+        '''
+            Esse método verifica se o mário colidiu com alguma plataforma
+        '''
         for i in range(Plataforma._num_plataformas):
             if self._collides_with(platforms[i]):
                 if (
@@ -260,7 +291,10 @@ class Mario(Entidades):
         return False
     
     def colisao_com_barril(self) ->bool:
-       for barrel in barril:
+        '''
+            Esse método verifica se o mário colidiu com algum barril
+        '''    
+        for barrel in barril:
             if barrel._collides_with(self) and (
                 self._file == "Mario_destroy.png" or
                 self._file == "Mario_destroy_left.png"):
@@ -272,10 +306,16 @@ class Mario(Entidades):
                 return True
     
     def win(self) -> None:
+        '''
+            Esse método verifica se o mário atingiu uma altura específica próxima a região onde está a Pauline
+        '''
         if  self._y <= 60:
             self._win = True
             
     def colisao_com_hammer(self):
+        '''
+            Esse método verifica se o mário colidiu com a marreta
+        '''
         for i in hammers:
             if self._collides_with(i):
                 hammers.remove(i)
@@ -410,6 +450,7 @@ class Mario(Entidades):
 
     @property
     def y(self) -> str:
+
         return f"{self._y}"
 
     @y.setter
@@ -418,7 +459,10 @@ class Mario(Entidades):
             f"Preguiçoso... toma seu {int} de volta. Nada de teletransportes por aqui"
         )
 
-class DonkeyKong(Entidades):
+class DonkeyKong(Entidade):
+    '''
+        Classe da entidade DonkeyKong
+    '''
     animacoes_esquerda_direita_list = [
         "dkForward.png",
         "dkLeft.png",
@@ -430,7 +474,10 @@ class DonkeyKong(Entidades):
 
     def __init__(
         self,intervalo: int,
-        ):
+        )-> None:
+        '''
+            incializa a instância da classe DonkeyKong
+        '''
         super().__init__("dkForward.png", 190, 65, "DonkeyKong")
         self.wait = 0
         self.count = 0
@@ -448,21 +495,32 @@ class DonkeyKong(Entidades):
             else:
                     self.wait += -1
 
-class Hammer(Entidades):
+class Hammer(Entidade):
+    '''
+        Classe da entidade Hammer
+    '''
     def __init__ (self, x, y) -> None:
+       '''
+            incializa a instância da classe Hammer
+        '''
        super().__init__ ("hammer.png", x, y, "Hammer")
        self._x = x
        self._y = y
        self._file = "hammer.png"
-       
-    
-class Pauline(Entidades):
+          
+class Pauline(Entidade):
+    '''
+        Classe da entidade Pauline
+    '''
     animacoes_pauline = [
         "pauline-still.png",
         "pauline-help.png"
 
     ]
     def __init__(self) -> None:
+        '''
+            incializa a instância da classe Pauline
+        '''
         super().__init__("pauline-still.png", 350, 45, "Pauline")
         self.timer = Timer(10)
         self.files = Pauline.animacoes_pauline
@@ -471,13 +529,18 @@ class Pauline(Entidades):
         self.timer.update()
         self._file = self.files[self.timer.ticks % len(self.files)]
             
-
-class Barril(Entidades):
+class Barril(Entidade):
+    '''
+        Classe da entidade Barril
+    '''
     animacoes_run = ["barrel1.png", "barrel2.png", "barrel3.png", "barrel4.png"]
     animacoes_escada = ["barrel-down.png"]
     _num_barril = 0
 
     def __init__(self) -> None:
+        '''
+            incializa a instância da classe Barril
+        '''
         super().__init__("barrel1.png", 250, 102, "Barril")
         self._movimenta_para = 5
         self._x_da_escada = 999
@@ -486,7 +549,10 @@ class Barril(Entidades):
         Barril._num_barril += 1
 
     def colisao_com_escadas(self):
-        for i in range(Escadas._num_escadas):
+        '''
+            Esse método verifica se o barril colidiu com alguma escada
+        '''
+        for i in range(Escada._num_escadas):
             if self._collides_with(escadas[i]):
                 self._x_da_escada = escadas[i]._x
                 self.movimentoY_escada(Barril.animacoes_escada, 0)
@@ -495,6 +561,9 @@ class Barril(Entidades):
         return False
 
     def colisao_com_plataformas(self) -> bool:
+        '''
+            Esse método verifica se o barril colidiu com alguma plataforma
+        '''
         for i in range(Plataforma._num_plataformas):
             if self._collides_with(platforms[i]):
                 if (self._y + 11 < platforms[i]._y) and not platforms[
@@ -533,23 +602,8 @@ class Barril(Entidades):
                     barrel.destroy()
                     Barril._num_barril -= 1
 
-class SistemaVida(BaseGroup):
-    def __init__(self) -> None:
-        super().__init__(0, 0)
-        _rectangle = Rectangle(600, 100, 140, 50, fill = 'black', outline = 'pink')
-        _label_vida1 = Image('full-heart.png', 630, 125) 
-        _label_vida2 = Image('full-heart.png', 670, 125) 
-        _label_vida3 = Image('full-heart.png',710, 125) 
-        self._add(_rectangle)
-        self._add(_label_vida1)
-        self._add(_label_vida2)
-        self._add(_label_vida3)
-    
-    def perde_vida(self) -> None:
-        coracao = self._objects[-1]
-        self._remove(coracao)
-        coracao._destroy()
-    
+
+###### fim Entidades     
 
 sistema = SistemaVida()
 pauline = Pauline()
@@ -563,10 +617,10 @@ hammer2 = Hammer(137, 147)
 hammers.append(hammer1)
 hammers.append(hammer2)
 
-ponto = Entidades(
+ponto = Entidade(
     "ponto.png", 100, platforms[0]._y - 1, "a"
 )  # PARTE DE CIMA DA PLATAFORMA
-ponto = Entidades("ponto2.png", mario._x, mario._y, "a")  # PÉ DO MARIO
+ponto = Entidade("ponto2.png", mario._x, mario._y, "a")  # PÉ DO MARIO
 print(f"pé do mário: {mario._y + 14}")
 print(f"plataforma: {platforms[0]._y - 1}")
 run(globals())

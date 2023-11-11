@@ -1,8 +1,11 @@
-from game_Base.estruturas.estrutura import Estruturas
-from game_Base.globais import mario_em_pe_na_plataforma
+from game_Base.estruturas.estrutura import Estrutura
+from game_Base.variaveis.globais import mario_em_pe_na_plataforma
 
 
-class Plataforma(Estruturas):
+class Plataforma(Estrutura):
+    '''
+        Classe da estrutura Plataforma
+    '''
     _num_plataformas = 0
 
     def __init__(
@@ -11,7 +14,10 @@ class Plataforma(Estruturas):
         y: float,
         transparência_mario: bool = False,
         transparência_barril: bool = False,
-    ):
+    )-> None:
+        '''
+        Inicializa a instância da classe Plataforma
+        '''
         super().__init__("Platform.png", x, y)
         Plataforma._num_plataformas += 1
         self._posterior = (
