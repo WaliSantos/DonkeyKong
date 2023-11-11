@@ -395,7 +395,7 @@ class Mario(Entidade):
 
             self._suspiro +=1
             
-            if self._vivo and self._suspiro == 12:
+            if self._vivo and self._suspiro == 8:
                 if self.colisao_com_barril():
                     self._vida += -100
                     
@@ -424,7 +424,7 @@ class Mario(Entidade):
                     if self._vida == 0:
                         self._file = "dead.png"
                         self._vivo = False
-                        Label("You Loser", 500, 200, 'Arial 80', anchor = 'center', color = "Green")
+                        Label("You Loser", 500, 200, 'Arial 80', anchor = 'center', color = "Red")
                 self._suspiro = 0
             elif self._vivo == False:
                 self._file = "dead.png"
