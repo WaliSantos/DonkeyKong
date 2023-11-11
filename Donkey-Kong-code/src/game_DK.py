@@ -7,6 +7,7 @@ from game_Base.estruturas.escadas import Escadas
 from game_Base.estruturas.plataforma import Plataforma
 from game_Base.estruturas.stackBarril import StackBarril
 import time
+import random
 from random import randint
 from random import choice
 from game_Base.globais import Max_direita, Max_esquerda
@@ -221,8 +222,12 @@ class Mario(Entidades):
     ]
     animacoes_pulo_list = ["Mario_Jump.png"]
     animacoes_puloesq_list = ["Mario_Jumpesq.png"]
+    animacoes_hammer_esq_list = [ 
+        "Mario_destroy_left.png","Mario_Run2esq.png"
+                                 ]
+    animacoes_hammer_dir_list = ["Mario_destroy.png","Mario_Run2.png"]
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__("Mario_Run1.png", 100, 458, "Mario")
         self._direita = True
         self._atacando = False
@@ -230,7 +235,12 @@ class Mario(Entidades):
         self._vida = 300
         self._win = False
         self._suspiro = 0
-        
+        self._colidiu_com_martelo = False
+        self._temporizador = None
+        self.timer = Timer(3)
+        self.filesEsq = Mario.animacoes_hammer_esq_list
+        self.filesDir = Mario.animacoes_hammer_dir_list
+
 
     def colisao_com_plataformas(self) -> bool:
         for i in range(Plataforma._num_plataformas):
@@ -248,6 +258,7 @@ class Mario(Entidades):
             return False
         self._y += 4
         return False
+    
     def colisao_com_barril(self) ->bool:
        for barrel in barril:
             if barrel._collides_with(self) and (
@@ -255,21 +266,31 @@ class Mario(Entidades):
                 self._file == "Mario_destroy_left.png"):
                     barril.remove(barrel)
                     barrel.destroy()
+                    time.sleep(1)
                     return True
             elif barrel._collides_with(self):
                 return True
     
-    def win(self):
-        if self._collides_with(pauline):
+    def win(self) -> None:
+        if  self._y <= 60:
             self._win = True
-
-    def update(self):
+            
+    def colisao_com_hammer(self):
+        for i in hammers:
+            if self._collides_with(i):
+                hammers.remove(i)
+                i.destroy()
+                return True
+        return False
+    
+    def update(self) -> None:
         self.colisao_com_barril()
         self.colisao_com_plataformas()
+        self.colisao_com_hammer()
         self.win()
 
-        if self._vivo:
-            if keyboard.is_key_just_down("space") and self.colisao_com_plataformas():
+        if self._vivo and not self.win():
+            if keyboard.is_key_just_down("space") and self.colisao_com_plataformas() and not self._colidiu_com_martelo:
                 self._pulando = True
             if self._pulando:
                 if self._direita:
@@ -280,24 +301,24 @@ class Mario(Entidades):
                 if self._count == 6:
                     self._pulando = False
                     self._count = 0
-
-            if keyboard.is_key_down("Left") and self._vivo:
+                    
+            if keyboard.is_key_down("Left"):
                 if self._x <= Max_esquerda:
                     self.movimentoX(Mario.animacoes_esquerda_list, 0)
                 else:
                     self.movimentoX(Mario.animacoes_esquerda_list, -3)
                 self._direita = False
-            if keyboard.is_key_down("Right") and self._vivo:
+            if keyboard.is_key_down("Right"):
                 if self._x >= Max_direita:
                     self.movimentoX(Mario.animacoes_direita_list, 0)
                 else:
                     self.movimentoX(Mario.animacoes_direita_list)
                 self._direita = True
             if keyboard.is_key_down("Up") and not self._pulando:
-                if self.colisao_com_escadas() and self._vivo:
+                if self.colisao_com_escadas():
                     self.movimentoY_escada(Mario.animacoes_subindo_list)
             if keyboard.is_key_down("Down") and not self._pulando:
-                if self.colisao_com_escadas() and self._vivo:
+                if self.colisao_com_escadas():
                     self.movimentoY_escada(Mario.animacoes_subindo_list, -2)
             if (
                 keyboard.is_key_up("Up")
@@ -312,18 +333,28 @@ class Mario(Entidades):
                     self._file = "Mario_Run1.png"
                 else:
                     self._file = "Mario_Run1esq.png"
-            
-            if keyboard.is_key_just_down("j") and self.colisao_com_plataformas():
-                if self._direita:
-                    self._file = "Mario_destroy.png"
-                else:
-                    self._file = "Mario_destroy_left.png"
+                    
+            if self.colisao_com_hammer():
+                self._colidiu_com_martelo = True
                 self._atacando = True
+                self._temporizador = time.time() + 9
+            
+            if self._colidiu_com_martelo:
+                if self._temporizador and time.time() < self._temporizador:
+                    self.timer.update()
+                    if self._direita:
+                        self._file = self.filesDir[self.timer.ticks % len(self.filesDir)]
+                    else:    
+                        self._file = self.filesEsq[self.timer.ticks % len(self.filesEsq)]
+                else:
+                    self._colidiu_com_martelo = False
+                
             if self._atacando:
                 if self.colisao_com_barril():      
                     Barril._num_barril += -1
 
             self._suspiro +=1
+            
             if self._vivo and self._suspiro == 12:
                 if self.colisao_com_barril():
                     self._vida += -100
@@ -335,10 +366,17 @@ class Mario(Entidades):
                     barril.clear()
                     Barril._num_barril = 0
                     
-                    self._file = "dead.png"
+                    for j in hammers:
+                        j.destroy()
+                    hammers.clear()
+                
+                    hammer1 = Hammer(425, 360)
+                    hammer2 = Hammer(137, 147)
 
-                    time.sleep(1)
-
+                    hammers.append(hammer1)
+                    hammers.append(hammer2)
+                    
+                    self._colidiu_com_martelo = False
                     self._x, self._y, self._direita = 100, 458, True
 
                     if self._vida >= 0:
@@ -350,12 +388,18 @@ class Mario(Entidades):
                 self._suspiro = 0
             elif self._vivo == False:
                 self._file = "dead.png"
-
-        if self._win:
-            Label("You Win", 500, 200, 'Arial 80', anchor = 'center', color = "Green")
-
+    
+        if self._win: 
+            Label("You Win", 500, 200, 'Arial 80', anchor='center', color="Green")
+            Image('full-heart.png', 350, 50)
+            pauline._file, pauline._x = "pauline-still.png", 310
+            mario._file, mario._x, mario._y = "Mario_Run1esq.png", 385, 60
+            for i in barril:
+                i.destroy()
+            barril.clear()
+            
     @property
-    def x(self):
+    def x(self) -> str:
         return f"{self._x}"
 
     @x.setter
@@ -365,7 +409,7 @@ class Mario(Entidades):
         )
 
     @property
-    def y(self):
+    def y(self) -> str:
         return f"{self._y}"
 
     @y.setter
@@ -373,7 +417,6 @@ class Mario(Entidades):
         print(
             f"Preguiçoso... toma seu {int} de volta. Nada de teletransportes por aqui"
         )
-
 
 class DonkeyKong(Entidades):
     animacoes_esquerda_direita_list = [
@@ -392,29 +435,39 @@ class DonkeyKong(Entidades):
         self.wait = 0
         self.count = 0
 
-    def update(self):
+    def update(self) -> None:
         self._file = "dkForward.png"
-        if not self.wait:
-                self._file = DonkeyKong.animacoes_esquerda_direita_list[(self.count // 7)]
-                self.count += 1
-                if self.count // DonkeyKong.animacao_length == 7:
-                    barril.append(Barril())
-                    self.count = 0
-                    self.wait = random.randint(50, 100)
-        else:
-                self.wait += -1
+        if not mario._win and mario._vivo:
+            if not self.wait:
+                    self._file = DonkeyKong.animacoes_esquerda_direita_list[(self.count // 7)]
+                    self.count += 1
+                    if self.count // DonkeyKong.animacao_length == 7:
+                        barril.append(Barril())
+                        self.count = 0
+                        self.wait = random.randint(50, 100)
+            else:
+                    self.wait += -1
 
+class Hammer(Entidades):
+    def __init__ (self, x, y) -> None:
+       super().__init__ ("hammer.png", x, y, "Hammer")
+       self._x = x
+       self._y = y
+       self._file = "hammer.png"
+       
+    
 class Pauline(Entidades):
     animacoes_pauline = [
         "pauline-still.png",
         "pauline-help.png"
 
     ]
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__("pauline-still.png", 350, 45, "Pauline")
         self.timer = Timer(10)
         self.files = Pauline.animacoes_pauline
-    def update(self):
+        
+    def update(self) -> None:
         self.timer.update()
         self._file = self.files[self.timer.ticks % len(self.files)]
             
@@ -424,7 +477,7 @@ class Barril(Entidades):
     animacoes_escada = ["barrel-down.png"]
     _num_barril = 0
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__("barrel1.png", 250, 102, "Barril")
         self._movimenta_para = 5
         self._x_da_escada = 999
@@ -463,7 +516,7 @@ class Barril(Entidades):
         self._y += 6
         return False
 
-    def update(self):
+    def update(self) -> None:
         if not (self._count % 50):
             self._decisao_de_descida = random.randint(0, 1)
         if self._x >= 530:
@@ -480,7 +533,6 @@ class Barril(Entidades):
                     barrel.destroy()
                     Barril._num_barril -= 1
 
-
 class SistemaVida(BaseGroup):
     def __init__(self) -> None:
         super().__init__(0, 0)
@@ -493,10 +545,10 @@ class SistemaVida(BaseGroup):
         self._add(_label_vida2)
         self._add(_label_vida3)
     
-    def perde_vida(self):
+    def perde_vida(self) -> None:
         coracao = self._objects[-1]
         self._remove(coracao)
-        coracao.destroy()
+        coracao._destroy()
     
 
 sistema = SistemaVida()
@@ -504,6 +556,13 @@ pauline = Pauline()
 barril = []
 donkeyKong = DonkeyKong(25)
 mario = Mario()
+hammers = []
+hammer1 = Hammer(425, 360)
+hammer2 = Hammer(137, 147)
+
+hammers.append(hammer1)
+hammers.append(hammer2)
+
 ponto = Entidades(
     "ponto.png", 100, platforms[0]._y - 1, "a"
 )  # PARTE DE CIMA DA PLATAFORMA
