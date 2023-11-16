@@ -152,7 +152,7 @@ class Entidade(BaseImage):
         Classe base para entidades do jogo.
         Esta classe representa entidades genéricas que podem existir nojogo.
     '''
-    def __init__(self, imagem, x: float, y: float, nome: str = "entidade"):
+    def __init__(self, imagem:str, x: int, y: int, nome: str = "entidade"):
         '''
         Inicializa a instância da classe Entidade
         '''
@@ -164,19 +164,19 @@ class Entidade(BaseImage):
         self._countJump = 0
         self._pulando = False
 
-    def __str__(self):
+    def __str__(self) -> str:
         '''
             Permite uma representação de string legível de uma instância da classe Entidade
         '''
         return f'A entidade é "{self._nome}" e está em x: {self._x} e y: {self._y}'
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         '''
             Permite uma representação oficial de uma instância da classe Entidade
         '''
         return f'A entidade é "{self._nome}" e está em x: {self._x} e y: {self._y}'
 
-    def movimentoX(self, animacaolist: list[str], velocidade: int = 3):
+    def movimentoX(self, animacaolist: list[str], velocidade: int = 3) -> None:
         '''
             Esse método cuida da movimentação no eixo x
         '''
@@ -187,7 +187,7 @@ class Entidade(BaseImage):
             return
         self._countX += 1
 
-    def movimentoY_escada(self, animacaolist: list[str], velocidade: int = 2):
+    def movimentoY_escada(self, animacaolist: list[str], velocidade: int = 2) -> None:
         '''
             Esse método cuida da movimentação no eixo y
         '''
@@ -198,7 +198,7 @@ class Entidade(BaseImage):
             return
         self._countY += 1
 
-    def pulo(self, animacaolist: list[str], velocidade: int = 2):
+    def pulo(self, animacaolist: list[str], velocidade: int = 2) -> None:
         '''
             Esse método permite a entidade pular
         '''
@@ -209,7 +209,7 @@ class Entidade(BaseImage):
             return
         self._countJump += 1
 
-    def colisao_com_escadas(self):
+    def colisao_com_escadas(self) -> bool:
         '''
             Esse método avalia se a entidade colidiu com uma escada 
         '''
@@ -264,7 +264,7 @@ class Mario(Entidade):
         self._win = False
         self._suspiro = 0
         self._colidiu_com_martelo = False
-        self._temporizador = None
+        self._temporizador: float = 0
         self.timer = Timer(3)
         self.filesEsq = Mario.animacoes_hammer_esq_list
         self.filesDir = Mario.animacoes_hammer_dir_list
@@ -290,7 +290,7 @@ class Mario(Entidade):
         self._y += 4
         return False
     
-    def colisao_com_barril(self) ->bool:
+    def colisao_com_barril(self) -> bool:
         '''
             Esse método verifica se o mário colidiu com algum barril
         '''    
@@ -304,15 +304,18 @@ class Mario(Entidade):
                     return True
             elif barrel._collides_with(self):
                 return True
+        return False
     
-    def win(self) -> None:
+    def win(self) -> bool:
         '''
             Esse método verifica se o mário atingiu uma altura específica próxima a região onde está a Pauline
         '''
         if  self._y <= 60:
             self._win = True
             
-    def colisao_com_hammer(self):
+        return self._win
+        
+    def colisao_com_hammer(self) -> bool:
         '''
             Esse método verifica se o mário colidiu com a marreta
         '''
@@ -443,7 +446,7 @@ class Mario(Entidade):
         return f"{self._x}"
 
     @x.setter
-    def x(self, int: int):
+    def x(self, int: int) -> None:
         print(
             f"Preguiçoso... toma seu {int} de volta. Nada de teletransportes por aqui"
         )
@@ -454,7 +457,7 @@ class Mario(Entidade):
         return f"{self._y}"
 
     @y.setter
-    def y(self, int: int):
+    def y(self, int: int) -> None:
         print(
             f"Preguiçoso... toma seu {int} de volta. Nada de teletransportes por aqui"
         )
@@ -499,7 +502,7 @@ class Hammer(Entidade):
     '''
         Classe da entidade Hammer
     '''
-    def __init__ (self, x, y) -> None:
+    def __init__ (self, x: int, y:int) -> None:
        '''
             incializa a instância da classe Hammer
         '''
@@ -548,7 +551,7 @@ class Barril(Entidade):
         self._decisao_de_descida = random.randint(0, 1)
         Barril._num_barril += 1
 
-    def colisao_com_escadas(self):
+    def colisao_com_escadas(self) -> bool:
         '''
             Esse método verifica se o barril colidiu com alguma escada
         '''
@@ -607,7 +610,7 @@ class Barril(Entidade):
 
 sistema = SistemaVida()
 pauline = Pauline()
-barril = []
+barril: list[Barril] = []
 donkeyKong = DonkeyKong(25)
 mario = Mario()
 hammers = []

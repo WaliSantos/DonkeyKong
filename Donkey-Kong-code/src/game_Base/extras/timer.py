@@ -2,7 +2,7 @@ class Timer:
    '''
       Classe Timer para controlar o tempo 
    '''
-   def __init__(self, interval)->None:
+   def __init__(self, interval: int)->None:
       '''
          Inicializa a instância da classe Timer
       '''
@@ -18,3 +18,5 @@ class Timer:
    @property
    def ticks(self):
       return self.counter // self.interval
+
+        
