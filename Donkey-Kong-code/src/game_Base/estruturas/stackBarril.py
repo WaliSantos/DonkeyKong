@@ -5,7 +5,7 @@ class StackBarril(Estrutura):
     '''
         Classe da estrutura StackBarril
     '''
-    def __init__(self, x: float, y: float) -> None:
+    def __init__(self, x: int, y: int) -> None:
         '''
         Inicializa a instância da classe StackBarril
         '''

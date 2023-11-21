@@ -18,9 +18,9 @@
         - Contribuição:
             -
             -
-    * Fowkys - Nota = x :
+    * Fowkys - Nota = 5 :
         - Contribuição:
-            -
+            - A maior parte do código
             -
     * Thiago - Nota = x :
         - Contribuição:
@@ -30,8 +30,15 @@
         - Contribuição:
             -
             -
-    * Walisson Santos Oliveira - Nota = x :
+    * Walisson Santos Oliveira - Nota = 5 :
         - Contribuição:
-            -
-            -
+            - Ajudei na organização e liderança do projeto;
+            - Ajudei na montagem do diagrama UML;
+            - Ajudei na implementação do Donkey Kong;
+            - Ajudei na implementação da Pauline;
+            - Ajudei na implementação dos barris;
+            - Ajudei na implementação do sistema de vidas do mário;
+            - Ajudei na implementação da marreta do mário para destruição dos barris;
+            - Ajudei na verificação de erros no mypy;
+            - Ajudei na documentação do código, por meio da implementação de docstrings; 
 

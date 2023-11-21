@@ -10,8 +10,8 @@ class Plataforma(Estrutura):
 
     def __init__(
         self,
-        x: float,
-        y: float,
+        x: int,
+        y: int,
         transparência_mario: bool = False,
         transparência_barril: bool = False,
     )-> None:
@@ -20,8 +20,6 @@ class Plataforma(Estrutura):
         '''
         super().__init__("Platform.png", x, y)
         Plataforma._num_plataformas += 1
-        self._posterior = (
-            y - mario_em_pe_na_plataforma
-        )  # Região em que o Mario fica em pé na plataforma
+        self._posterior = y - mario_em_pe_na_plataforma  # Região em que o Mario fica em pé na plataforma
         self._transparente_mario = transparência_mario
         self._transparente_barril = transparência_barril
