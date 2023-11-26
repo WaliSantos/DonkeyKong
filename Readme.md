@@ -30,9 +30,10 @@
 - Nomes dos Integrantes da Equipe:
     * Breno Barreto - Nota = x:
         - Contribuição:
-        
+
     * João Cerqueira - Nota = 5:
         - Contribuição:
+            - Maior parte do código
             - Implementou a movimentação do Mário;
             - Animações de andar;
             - Pulo do Mário;
