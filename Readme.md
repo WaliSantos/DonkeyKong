@@ -30,11 +30,23 @@
 - Nomes dos Integrantes da Equipe:
     * Breno Barreto - Nota = x:
         - Contribuição:
-            -
-            -
-    * Fowkys - Nota = 5:
+        
+    * João Cerqueira - Nota = 5:
         - Contribuição:
-            - A maior parte do código;
+            - Implementou a movimentação do Mário;
+            - Animações de andar;
+            - Pulo do Mário;
+            - Animações do Pulo;
+            - Lógica do ambiente:
+            - Contato com as plataformas;
+            - Subir numa escada atravessada por uma plataforma;
+            - Lógica de gravidade, como não cair no meio da escada;
+            - Pôs todas as plataformas e escadas:
+            - Lógica para subir nas escadas assim como no jogo, já que são um pouco acima uma da outra;
+            - Lógica do Donkey Kong lançar os barris;
+            - Os barris: Lógica para aparecimento, decisão de descida em uma tal escada, aparecimento;
+            - O mário conseguir continuar na mesma animação ao parar;
+            - Timing das animações do Donkey Kong;
         
     * Thiago Oliveira Franca - Nota = 4:
         - Contribuição:
@@ -55,9 +67,13 @@
             - Ajudei na montagem do diagrama UML;
             - Ajudei na implementação do Donkey Kong;
             - Ajudei na implementação da Pauline;
+            - Ajudei na implementação do timing da animação do Donkey kong, em consonânica com o momento exato de lançar os barris; 
             - Ajudei na implementação dos barris;
             - Ajudei na implementação do sistema de vidas do mário;
             - Ajudei na implementação da marreta do mário para destruição dos barris;
+            - Ajudei na implementação no sistema de pulo do mário;
+            - Ajudei na implementação da lógica de vitória ou derrota;
             - Ajudei na verificação de erros no mypy;
-            - Ajudei na documentação do código, por meio da implementação de docstrings; 
+            - Ajudei na documentação do código, por meio da implementação de docstrings;
+
 
