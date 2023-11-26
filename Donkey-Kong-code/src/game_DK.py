@@ -198,7 +198,7 @@ class Entidade(BaseImage):
             return
         self._countY += 1
 
-    def pulo(self, animacaolist: list[str], velocidade: int = 2) -> None:
+    def pulo(self, animacaolist: list[str], velocidade: int = 3) -> None:
         '''
             Esse método permite a entidade pular
         '''
@@ -245,8 +245,20 @@ class Mario(Entidade):
         "Mario_Climb2.png",
         "Mario_Climb2.png",
     ]
-    animacoes_pulo_list = ["Mario_Jump.png"]
-    animacoes_puloesq_list = ["Mario_Jumpesq.png"]
+    animacoes_pulo_list = ["Mario_Jump.png",
+                           "Mario_Jump.png",
+                           "Mario_Jump.png",
+                           "Mario_Jump.png",
+                           "Mario_Jump.png",
+                           "Mario_Jump.png",
+                           ]
+    animacoes_puloesq_list = ["Mario_Jumpesq.png",
+                              "Mario_Jumpesq.png",
+                              "Mario_Jumpesq.png",
+                              "Mario_Jumpesq.png",
+                              "Mario_Jumpesq.png",
+                              "Mario_Jumpesq.png"
+                              ]
     animacoes_hammer_esq_list = [ 
         "Mario_destroy_left.png","Mario_Run2esq.png"
                                  ]
@@ -340,22 +352,28 @@ class Mario(Entidade):
                     self.pulo(Mario.animacoes_pulo_list, 9)
                 else:
                     self.pulo(Mario.animacoes_puloesq_list, 9)
+                    
                 self._count += 1
                 if self._count == 6:
                     self._pulando = False
                     self._count = 0
-                    
+    
             if keyboard.is_key_down("Left"):
                 if self._x <= Max_esquerda:
                     self.movimentoX(Mario.animacoes_esquerda_list, 0)
                 else:
                     self.movimentoX(Mario.animacoes_esquerda_list, -3)
+                if self._pulando:
+                    self.movimentoX(Mario.animacoes_puloesq_list, -4)
                 self._direita = False
             if keyboard.is_key_down("Right"):
                 if self._x >= Max_direita:
                     self.movimentoX(Mario.animacoes_direita_list, 0)
                 else:
                     self.movimentoX(Mario.animacoes_direita_list)
+                if self._pulando:
+                    self.movimentoX(Mario.animacoes_pulo_list,4)
+                            
                 self._direita = True
             if keyboard.is_key_down("Up") and not self._pulando:
                 if self.colisao_com_escadas():

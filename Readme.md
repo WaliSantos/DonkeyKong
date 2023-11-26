@@ -12,7 +12,7 @@
     * O que é a pasta game_base? 
         É a pasta onde se encontra toda a base que dá suporte, para além das entidades, ao game. É lá que você encontrará os códigos das estruturas, sistemas, fundo, variáveis globais e códigos extras ou complementares.
     * Todas as classes estão com docstrings para melhorar o entendimento  do programa.
-    * Se ocorreu um game over, feche o jogo e abra o arquivo game_DK.py novamente e rode-o. Logo, o jogo reiniciará. 
+    * Se ocorreu uma derrota, feche o jogo e abra o arquivo game_DK.py e rode-o novamente. Logo, o jogo reiniciará. 
 
 - Orientações de jogabilidade?
     * Como mover o mário?
