@@ -145,17 +145,19 @@ platforms = [
 
 StackBarril(110, 70)
 
-############################## Entidades 
+############################## Entidades
+
 
 class Entidade(BaseImage):
-    '''
-        Classe base para entidades do jogo.
-        Esta classe representa entidades genéricas que podem existir nojogo.
-    '''
-    def __init__(self, imagem:str, x: int, y: int, nome: str = "entidade"):
-        '''
+    """
+    Classe base para entidades do jogo.
+    Esta classe representa entidades genéricas que podem existir nojogo.
+    """
+
+    def __init__(self, imagem: str, x: int, y: int, nome: str = "entidade"):
+        """
         Inicializa a instância da classe Entidade
-        '''
+        """
         super().__init__(imagem, x, y)
         self._nome = nome
         self._count = 0
@@ -165,21 +167,21 @@ class Entidade(BaseImage):
         self._pulando = False
 
     def __str__(self) -> str:
-        '''
-            Permite uma representação de string legível de uma instância da classe Entidade
-        '''
+        """
+        Permite uma representação de string legível de uma instância da classe Entidade
+        """
         return f'A entidade é "{self._nome}" e está em x: {self._x} e y: {self._y}'
 
     def __repr__(self) -> str:
-        '''
-            Permite uma representação oficial de uma instância da classe Entidade
-        '''
+        """
+        Permite uma representação oficial de uma instância da classe Entidade
+        """
         return f'A entidade é "{self._nome}" e está em x: {self._x} e y: {self._y}'
 
     def movimentoX(self, animacaolist: list[str], velocidade: int = 3) -> None:
-        '''
-            Esse método cuida da movimentação no eixo x
-        '''
+        """
+        Esse método cuida da movimentação no eixo x
+        """
         self._file = animacaolist[self._countX]
         self._x += velocidade
         if not ((self._countX + 1) % len(animacaolist)):
@@ -188,9 +190,9 @@ class Entidade(BaseImage):
         self._countX += 1
 
     def movimentoY_escada(self, animacaolist: list[str], velocidade: int = 2) -> None:
-        '''
-            Esse método cuida da movimentação no eixo y
-        '''
+        """
+        Esse método cuida da movimentação no eixo y
+        """
         self._file = animacaolist[self._countY]
         self._y -= velocidade
         if not ((self._countY + 1) % len(animacaolist)):
@@ -199,9 +201,9 @@ class Entidade(BaseImage):
         self._countY += 1
 
     def pulo(self, animacaolist: list[str], velocidade: int = 3) -> None:
-        '''
-            Esse método permite a entidade pular
-        '''
+        """
+        Esse método permite a entidade pular
+        """
         self._file = animacaolist[self._countJump]
         self._y -= velocidade
         if not ((self._countJump + 1) % len(animacaolist)):
@@ -210,20 +212,22 @@ class Entidade(BaseImage):
         self._countJump += 1
 
     def colisao_com_escadas(self) -> bool:
-        '''
-            Esse método avalia se a entidade colidiu com uma escada 
-        '''
+        """
+        Esse método avalia se a entidade colidiu com uma escada
+        """
         for i in range(Escada._num_escadas):
             if self._collides_with(escadas[i]):
                 if self._x + 5 >= escadas[i]._x and self._x - 5 <= escadas[i]._x:
                     return True
         return False
 
+
 class Mario(Entidade):
-    '''
-        Classe da entidade mário
-    '''
-    animacoes_direita_list = [
+    """
+    Classe da entidade mário
+    """
+
+    _animacoes_direita_list = [
         "Mario_Run2.png",
         "Mario_Run2.png",
         "Mario_Run3.png",
@@ -231,7 +235,7 @@ class Mario(Entidade):
         "Mario_Run1.png",
         "Mario_Run1.png",
     ]
-    animacoes_esquerda_list = [
+    _animacoes_esquerda_list = [
         "Mario_Run2esq.png",
         "Mario_Run2esq.png",
         "Mario_Run3esq.png",
@@ -239,35 +243,35 @@ class Mario(Entidade):
         "Mario_Run1esq.png",
         "Mario_Run1esq.png",
     ]
-    animacoes_subindo_list = [
+    _animacoes_subindo_list = [
         "Mario_Climb.png",
         "Mario_Climb.png",
         "Mario_Climb2.png",
         "Mario_Climb2.png",
     ]
-    animacoes_pulo_list = ["Mario_Jump.png",
-                           "Mario_Jump.png",
-                           "Mario_Jump.png",
-                           "Mario_Jump.png",
-                           "Mario_Jump.png",
-                           "Mario_Jump.png",
-                           ]
-    animacoes_puloesq_list = ["Mario_Jumpesq.png",
-                              "Mario_Jumpesq.png",
-                              "Mario_Jumpesq.png",
-                              "Mario_Jumpesq.png",
-                              "Mario_Jumpesq.png",
-                              "Mario_Jumpesq.png"
-                              ]
-    animacoes_hammer_esq_list = [ 
-        "Mario_destroy_left.png","Mario_Run2esq.png"
-                                 ]
-    animacoes_hammer_dir_list = ["Mario_destroy.png","Mario_Run2.png"]
+    _animacoes_pulo_list = [
+        "Mario_Jump.png",
+        "Mario_Jump.png",
+        "Mario_Jump.png",
+        "Mario_Jump.png",
+        "Mario_Jump.png",
+        "Mario_Jump.png",
+    ]
+    _animacoes_puloesq_list = [
+        "Mario_Jumpesq.png",
+        "Mario_Jumpesq.png",
+        "Mario_Jumpesq.png",
+        "Mario_Jumpesq.png",
+        "Mario_Jumpesq.png",
+        "Mario_Jumpesq.png",
+    ]
+    _animacoes_hammer_esq_list = ["Mario_destroy_left.png", "Mario_Run2esq.png"]
+    _animacoes_hammer_dir_list = ["Mario_destroy.png", "Mario_Run2.png"]
 
     def __init__(self) -> None:
-        '''
-            incializa a instância da classe Mário
-        '''
+        """
+        incializa a instância da classe Mário
+        """
         super().__init__("Mario_Run1.png", 100, 458, "Mario")
         self._direita = True
         self._atacando = False
@@ -277,15 +281,14 @@ class Mario(Entidade):
         self._suspiro = 0
         self._colidiu_com_martelo = False
         self._temporizador: float = 0
-        self.timer = Timer(3)
-        self.filesEsq = Mario.animacoes_hammer_esq_list
-        self.filesDir = Mario.animacoes_hammer_dir_list
-
+        self._timer = Timer(3)
+        self._filesEsq = Mario._animacoes_hammer_esq_list
+        self._filesDir = Mario._animacoes_hammer_dir_list
 
     def colisao_com_plataformas(self) -> bool:
-        '''
-            Esse método verifica se o mário colidiu com alguma plataforma
-        '''
+        """
+        Esse método verifica se o mário colidiu com alguma plataforma
+        """
         for i in range(Plataforma._num_plataformas):
             if self._collides_with(platforms[i]):
                 if (
@@ -301,43 +304,44 @@ class Mario(Entidade):
             return False
         self._y += 4
         return False
-    
+
     def colisao_com_barril(self) -> bool:
-        '''
-            Esse método verifica se o mário colidiu com algum barril
-        '''    
+        """
+        Esse método verifica se o mário colidiu com algum barril
+        """
         for barrel in barril:
             if barrel._collides_with(self) and (
-                self._file == "Mario_destroy.png" or
-                self._file == "Mario_destroy_left.png"):
-                    barril.remove(barrel)
-                    barrel.destroy()
-                    time.sleep(1)
-                    return True
+                self._file == "Mario_destroy.png"
+                or self._file == "Mario_destroy_left.png"
+            ):
+                barril.remove(barrel)
+                barrel.destroy()
+                time.sleep(1)
+                return True
             elif barrel._collides_with(self):
                 return True
         return False
-    
+
     def win(self) -> bool:
-        '''
-            Esse método verifica se o mário atingiu uma altura específica próxima a região onde está a Pauline
-        '''
-        if  self._y <= 60:
+        """
+        Esse método verifica se o mário atingiu uma altura específica próxima a região onde está a Pauline
+        """
+        if self._y <= 60:
             self._win = True
-            
+
         return self._win
-        
+
     def colisao_com_hammer(self) -> bool:
-        '''
-            Esse método verifica se o mário colidiu com a marreta
-        '''
+        """
+        Esse método verifica se o mário colidiu com a marreta
+        """
         for i in hammers:
             if self._collides_with(i):
                 hammers.remove(i)
                 i.destroy()
                 return True
         return False
-    
+
     def update(self) -> None:
         self.colisao_com_barril()
         self.colisao_com_plataformas()
@@ -345,42 +349,46 @@ class Mario(Entidade):
         self.win()
 
         if self._vivo and not self.win():
-            if keyboard.is_key_just_down("space") and self.colisao_com_plataformas() and not self._colidiu_com_martelo:
+            if (
+                keyboard.is_key_just_down("space")
+                and self.colisao_com_plataformas()
+                and not self._colidiu_com_martelo
+            ):
                 self._pulando = True
             if self._pulando:
                 if self._direita:
-                    self.pulo(Mario.animacoes_pulo_list, 9)
+                    self.pulo(Mario._animacoes_pulo_list, 9)
                 else:
-                    self.pulo(Mario.animacoes_puloesq_list, 9)
-                    
+                    self.pulo(Mario._animacoes_puloesq_list, 9)
+
                 self._count += 1
                 if self._count == 6:
                     self._pulando = False
                     self._count = 0
-    
+
             if keyboard.is_key_down("Left"):
                 if self._x <= Max_esquerda:
-                    self.movimentoX(Mario.animacoes_esquerda_list, 0)
+                    self.movimentoX(Mario._animacoes_esquerda_list, 0)
                 else:
-                    self.movimentoX(Mario.animacoes_esquerda_list, -3)
+                    self.movimentoX(Mario._animacoes_esquerda_list, -3)
                 if self._pulando:
-                    self.movimentoX(Mario.animacoes_puloesq_list, -4)
+                    self.movimentoX(Mario._animacoes_puloesq_list, -4)
                 self._direita = False
             if keyboard.is_key_down("Right"):
                 if self._x >= Max_direita:
-                    self.movimentoX(Mario.animacoes_direita_list, 0)
+                    self.movimentoX(Mario._animacoes_direita_list, 0)
                 else:
-                    self.movimentoX(Mario.animacoes_direita_list)
+                    self.movimentoX(Mario._animacoes_direita_list)
                 if self._pulando:
-                    self.movimentoX(Mario.animacoes_pulo_list,4)
-                            
+                    self.movimentoX(Mario._animacoes_pulo_list, 4)
+
                 self._direita = True
             if keyboard.is_key_down("Up") and not self._pulando:
                 if self.colisao_com_escadas():
-                    self.movimentoY_escada(Mario.animacoes_subindo_list)
+                    self.movimentoY_escada(Mario._animacoes_subindo_list)
             if keyboard.is_key_down("Down") and not self._pulando:
                 if self.colisao_com_escadas():
-                    self.movimentoY_escada(Mario.animacoes_subindo_list, -2)
+                    self.movimentoY_escada(Mario._animacoes_subindo_list, -2)
             if (
                 keyboard.is_key_up("Up")
                 and keyboard.is_key_up("Down")
@@ -394,49 +402,53 @@ class Mario(Entidade):
                     self._file = "Mario_Run1.png"
                 else:
                     self._file = "Mario_Run1esq.png"
-                    
+
             if self.colisao_com_hammer():
                 self._colidiu_com_martelo = True
                 self._atacando = True
                 self._temporizador = time.time() + 9
-            
+
             if self._colidiu_com_martelo:
                 if self._temporizador and time.time() < self._temporizador:
-                    self.timer.update()
+                    self._timer.update()
                     if self._direita:
-                        self._file = self.filesDir[self.timer.ticks % len(self.filesDir)]
-                    else:    
-                        self._file = self.filesEsq[self.timer.ticks % len(self.filesEsq)]
+                        self._file = self._filesDir[
+                            self._timer.ticks % len(self._filesDir)
+                        ]
+                    else:
+                        self._file = self._filesEsq[
+                            self._timer.ticks % len(self._filesEsq)
+                        ]
                 else:
                     self._colidiu_com_martelo = False
-                
+
             if self._atacando:
-                if self.colisao_com_barril():      
+                if self.colisao_com_barril():
                     Barril._num_barril += -1
 
-            self._suspiro +=1
-            
+            self._suspiro += 1
+
             if self._vivo and self._suspiro == 8:
                 if self.colisao_com_barril():
                     self._vida += -100
-                    
+
                     time.sleep(1)
 
                     for i in barril:
                         i.destroy()
                     barril.clear()
                     Barril._num_barril = 0
-                    
+
                     for j in hammers:
                         j.destroy()
                     hammers.clear()
-                
+
                     hammer1 = Hammer(425, 360)
                     hammer2 = Hammer(137, 147)
 
                     hammers.append(hammer1)
                     hammers.append(hammer2)
-                    
+
                     self._colidiu_com_martelo = False
                     self._x, self._y, self._direita = 100, 458, True
 
@@ -445,20 +457,27 @@ class Mario(Entidade):
                     if self._vida == 0:
                         self._file = "dead.png"
                         self._vivo = False
-                        Label("You Loser", 500, 200, 'Arial 80', anchor = 'center', color = "Red")
+                        Label(
+                            "You Loser",
+                            500,
+                            200,
+                            "Arial 80",
+                            anchor="center",
+                            color="Red",
+                        )
                 self._suspiro = 0
             elif self._vivo == False:
                 self._file = "dead.png"
-    
-        if self._win: 
-            Label("You Win", 500, 200, 'Arial 80', anchor='center', color="Green")
-            Image('full-heart.png', 350, 50)
+
+        if self._win:
+            Label("You Win", 500, 200, "Arial 80", anchor="center", color="Green")
+            Image("full-heart.png", 350, 50)
             pauline._file, pauline._x = "pauline-still.png", 310
             mario._file, mario._x, mario._y = "Mario_Run1esq.png", 385, 60
             for i in barril:
                 i.destroy()
             barril.clear()
-            
+
     @property
     def x(self) -> str:
         return f"{self._x}"
@@ -471,7 +490,6 @@ class Mario(Entidade):
 
     @property
     def y(self) -> str:
-
         return f"{self._y}"
 
     @y.setter
@@ -480,88 +498,96 @@ class Mario(Entidade):
             f"Preguiçoso... toma seu {int} de volta. Nada de teletransportes por aqui"
         )
 
+
 class DonkeyKong(Entidade):
-    '''
-        Classe da entidade DonkeyKong
-    '''
-    animacoes_esquerda_direita_list = [
+    """
+    Classe da entidade DonkeyKong
+    """
+
+    _animacoes_esquerda_direita_list = [
         "dkForward.png",
         "dkLeft.png",
         "dkForward.png",
         "dkRight.png",
     ]
-    animacoes_subindo_list = (["dkClimbEmpty1.png", "dkClimbEmpty2.png"],)
-    animacao_length = len(animacoes_esquerda_direita_list)
+    _animacoes_subindo_list = (["dkClimbEmpty1.png", "dkClimbEmpty2.png"],)
+    _animacao_length = len(_animacoes_esquerda_direita_list)
 
     def __init__(
-        self,intervalo: int,
-        )-> None:
-        '''
-            incializa a instância da classe DonkeyKong
-        '''
+        self,
+        intervalo: int,
+    ) -> None:
+        """
+        incializa a instância da classe DonkeyKong
+        """
         super().__init__("dkForward.png", 190, 65, "DonkeyKong")
-        self.wait = 0
-        self.count = 0
+        self._wait = 0
+        self._count = 0
 
     def update(self) -> None:
         self._file = "dkForward.png"
         if not mario._win and mario._vivo:
-            if not self.wait:
-                    self._file = DonkeyKong.animacoes_esquerda_direita_list[(self.count // 7)]
-                    self.count += 1
-                    if self.count // DonkeyKong.animacao_length == 7:
-                        barril.append(Barril())
-                        self.count = 0
-                        self.wait = random.randint(50, 100)
+            if not self._wait:
+                self._file = DonkeyKong._animacoes_esquerda_direita_list[
+                    (self._count // 7)
+                ]
+                self._count += 1
+                if self._count // DonkeyKong._animacao_length == 7:
+                    barril.append(Barril())
+                    self._count = 0
+                    self._wait = random.randint(50, 100)
             else:
-                    self.wait += -1
+                self._wait += -1
+
 
 class Hammer(Entidade):
-    '''
-        Classe da entidade Hammer
-    '''
-    def __init__ (self, x: int, y:int) -> None:
-       '''
-            incializa a instância da classe Hammer
-        '''
-       super().__init__ ("hammer.png", x, y, "Hammer")
-       self._x = x
-       self._y = y
-       self._file = "hammer.png"
-          
-class Pauline(Entidade):
-    '''
-        Classe da entidade Pauline
-    '''
-    animacoes_pauline = [
-        "pauline-still.png",
-        "pauline-help.png"
+    """
+    Classe da entidade Hammer
+    """
 
-    ]
+    def __init__(self, x: int, y: int) -> None:
+        """
+        incializa a instância da classe Hammer
+        """
+        super().__init__("hammer.png", x, y, "Hammer")
+        self._x = x
+        self._y = y
+        self._file = "hammer.png"
+
+
+class Pauline(Entidade):
+    """
+    Classe da entidade Pauline
+    """
+
+    _animacoes_pauline = ["pauline-still.png", "pauline-help.png"]
+
     def __init__(self) -> None:
-        '''
-            incializa a instância da classe Pauline
-        '''
+        """
+        incializa a instância da classe Pauline
+        """
         super().__init__("pauline-still.png", 350, 45, "Pauline")
-        self.timer = Timer(10)
-        self.files = Pauline.animacoes_pauline
-        
+        self._timer = Timer(10)
+        self._files = Pauline._animacoes_pauline
+
     def update(self) -> None:
-        self.timer.update()
-        self._file = self.files[self.timer.ticks % len(self.files)]
-            
+        self._timer.update()
+        self._file = self._files[self._timer.ticks % len(self._files)]
+
+
 class Barril(Entidade):
-    '''
-        Classe da entidade Barril
-    '''
-    animacoes_run = ["barrel1.png", "barrel2.png", "barrel3.png", "barrel4.png"]
-    animacoes_escada = ["barrel-down.png"]
+    """
+    Classe da entidade Barril
+    """
+
+    _animacoes_run = ["barrel1.png", "barrel2.png", "barrel3.png", "barrel4.png"]
+    _animacoes_escada = ["barrel-down.png"]
     _num_barril = 0
 
     def __init__(self) -> None:
-        '''
-            incializa a instância da classe Barril
-        '''
+        """
+        incializa a instância da classe Barril
+        """
         super().__init__("barrel1.png", 250, 102, "Barril")
         self._movimenta_para = 5
         self._x_da_escada = 999
@@ -570,21 +596,21 @@ class Barril(Entidade):
         Barril._num_barril += 1
 
     def colisao_com_escadas(self) -> bool:
-        '''
-            Esse método verifica se o barril colidiu com alguma escada
-        '''
+        """
+        Esse método verifica se o barril colidiu com alguma escada
+        """
         for i in range(Escada._num_escadas):
             if self._collides_with(escadas[i]):
                 self._x_da_escada = escadas[i]._x
-                self.movimentoY_escada(Barril.animacoes_escada, 0)
+                self.movimentoY_escada(Barril._animacoes_escada, 0)
                 return True
         self._x_da_escada = 999
         return False
 
     def colisao_com_plataformas(self) -> bool:
-        '''
-            Esse método verifica se o barril colidiu com alguma plataforma
-        '''
+        """
+        Esse método verifica se o barril colidiu com alguma plataforma
+        """
         for i in range(Plataforma._num_plataformas):
             if self._collides_with(platforms[i]):
                 if (self._y + 11 < platforms[i]._y) and not platforms[
@@ -614,17 +640,17 @@ class Barril(Entidade):
         if self._x <= 90:
             self._movimenta_para = 5
         if self._x <= 532 and self._x >= 88 and self.colisao_com_plataformas():
-            self.movimentoX(Barril.animacoes_run, self._movimenta_para)
+            self.movimentoX(Barril._animacoes_run, self._movimenta_para)
         self._count += 1
-        
+
         for barrel in barril:
             if barrel._x >= 110 and barrel._y >= 463:
-                    barril.remove(barrel)
-                    barrel.destroy()
-                    Barril._num_barril -= 1
+                barril.remove(barrel)
+                barrel.destroy()
+                Barril._num_barril -= 1
 
 
-###### fim Entidades     
+###### fim Entidades
 
 sistema = SistemaVida()
 pauline = Pauline()

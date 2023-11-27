@@ -28,8 +28,11 @@
     * Para conseguir utilizar marretas, será perciso ir à posição de marreta mais próxima e pular com o mário até alcançá-la.
 
 - Nomes dos Integrantes da Equipe:
-    * Breno Barreto - Nota = x:
+    * Breno Barreto - Nota = 2:
         - Contribuição:
+            - Fiz o diagrama UML;
+            - Tentei implementar os barris e aumentar o nível de dificuldade;
+            - Me apresentei para ajudar mesmo sem conseguir desde que entrei no grupo;
 
     * João Cerqueira - Nota = 5:
         - Contribuição:
